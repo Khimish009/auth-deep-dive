@@ -6,7 +6,7 @@ export class AppService {
     return 'Hello World!';
   }
 
-  health() {
+  health(): { status: 'ok' } {
     return {
       status: 'ok',
     };
