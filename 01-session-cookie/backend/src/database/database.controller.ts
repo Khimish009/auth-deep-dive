@@ -6,7 +6,7 @@ export class DatabaseController {
   constructor(private readonly databaseService: DatabaseService) {}
 
   @Get('/health/db')
-  async getHealth() {
+  async getHealth(): Promise<{ status: string; database: string }> {
     try {
       await this.databaseService.health();
 
