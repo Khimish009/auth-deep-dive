@@ -1,16 +1,18 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { Pool } from 'pg';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class DatabaseService {
+export class DatabaseService implements OnModuleDestroy {
   private readonly pool: Pool;
   private readonly logger = new Logger(DatabaseService.name);
 
   constructor(private readonly configService: ConfigService) {
+    const rawPort = this.configService.getOrThrow('DB_PORT');
+
     this.pool = new Pool({
       host: this.configService.getOrThrow<string>('DB_HOST'),
-      port: Number(this.configService.getOrThrow('DB_PORT')) || 5433,
+      port: this.parseAndValidatePort(rawPort),
       user: this.configService.getOrThrow<string>('DB_USER'),
       password: this.configService.getOrThrow<string>('DB_PASSWORD'),
       database: this.configService.getOrThrow<string>('DB_NAME'),
@@ -25,7 +27,22 @@ export class DatabaseService {
     });
   }
 
-  async onModuleDestroy() {
+  private parseAndValidatePort(portStr: string) {
+    const port = Number(portStr);
+
+    if (
+      Number.isNaN(port) ||
+      !Number.isInteger(port) ||
+      port < 1 ||
+      port > 65535
+    ) {
+      throw new Error('Критическая ошибка конфигурации...');
+    }
+
+    return port;
+  }
+
+  async onModuleDestroy(): Promise<void> {
     await this.pool.end();
   }
 

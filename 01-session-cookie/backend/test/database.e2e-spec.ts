@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'; // Импортируем инструменты Vitest
-import { AppModule } from '../src/app.module';
-import { DatabaseService } from '../src/database/database.service';
+import { AppModule } from '../src/app.module.js';
+import { DatabaseService } from '../src/database/database.service.js';
 
 describe('Database Health Check (e2e)', () => {
   let app: INestApplication;
@@ -21,6 +21,7 @@ describe('Database Health Check (e2e)', () => {
   });
 
   afterAll(async () => {
+    vi.restoreAllMocks();
     await app.close();
   });
 
