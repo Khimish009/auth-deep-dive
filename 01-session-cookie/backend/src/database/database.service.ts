@@ -36,7 +36,9 @@ export class DatabaseService implements OnModuleDestroy {
       port < 1 ||
       port > 65535
     ) {
-      throw new Error('Критическая ошибка конфигурации...');
+      throw new Error(
+        'Invalid DB_PORT: expected an integer between 1 and 65535',
+      );
     }
 
     return port;

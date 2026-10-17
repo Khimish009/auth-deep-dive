@@ -20,8 +20,11 @@ describe('Database Health Check (e2e)', () => {
     await app.init();
   });
 
-  afterAll(async () => {
+  afterEach(() => {
     vi.restoreAllMocks();
+  });
+
+  afterAll(async () => {
     await app.close();
   });
 
