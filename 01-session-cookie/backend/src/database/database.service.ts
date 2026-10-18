@@ -52,9 +52,9 @@ export class DatabaseService implements OnModuleDestroy {
     await this.pool.query('SELECT 1');
   }
 
-  async query<T extends QueryResultRow = any>(
+  async query<T extends QueryResultRow = QueryResultRow>(
     queryText: string,
-    params: any[],
+    params: unknown[],
   ): Promise<QueryResult<T>> {
     return await this.pool.query(queryText, params);
   }
