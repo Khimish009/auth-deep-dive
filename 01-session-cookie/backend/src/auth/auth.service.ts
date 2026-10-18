@@ -1,5 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service.js';
+import { UserRow, UsersService } from '../users/users.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import argon2 from 'argon2';
 
@@ -7,7 +7,7 @@ import argon2 from 'argon2';
 export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
-  async register(dto: RegisterDto) {
+  async register(dto: RegisterDto): Promise<UserRow> {
     const email = dto.email.trim().toLowerCase();
     const passwordHash = await argon2.hash(dto.password);
 
@@ -15,8 +15,8 @@ export class AuthService {
       const result = await this.usersService.create(email, passwordHash);
 
       return result;
-    } catch (err: any) {
-      if (err.code === '23505') {
+    } catch (err: unknown) {
+      if ((err as any)?.code === '23505') {
         throw new ConflictException('User with this email already exists');
       }
 
