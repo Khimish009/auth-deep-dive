@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { RegisterDto } from './register.dto';
+import { RegisterDto } from './register.dto.js';
 
 // Вспомогательная функция, чтобы не дублировать код валидации
-async function getValidationErrors(plainObject: any) {
+async function getValidationErrors(plainObject: Record<string, unknown>) {
   // 1. Превращаем обычный JS-объект в экземпляр класса DTO
   const dtoInstance = plainToInstance(RegisterDto, plainObject);
   // 2. Валидируем этот экземпляр и возвращаем массив ошибок
