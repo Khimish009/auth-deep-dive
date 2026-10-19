@@ -6,6 +6,7 @@ import {
 import { UserRow, UsersService } from '../users/users.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import argon2 from 'argon2';
+import { DUMMY_PASSWORD_HASH } from './constants.js';
 
 @Injectable()
 export class AuthService {
@@ -38,6 +39,8 @@ export class AuthService {
     const user = await this.usersService.findByEmail(normalizedEmail);
 
     if (!user) {
+      await argon2.verify(DUMMY_PASSWORD_HASH, password);
+
       throw new UnauthorizedException('Invalid email or password');
     }
 

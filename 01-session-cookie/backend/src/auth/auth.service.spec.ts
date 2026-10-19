@@ -1,5 +1,4 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { UnauthorizedException } from '@nestjs/common';
 import * as argon2 from 'argon2';
 
 import { AuthService } from './auth.service.js';
@@ -75,5 +74,17 @@ describe('AuthService.validateCredentials', () => {
         message: 'Invalid email or password',
       },
     });
+  });
+
+  it('propagates database errors instead of returning 401', async () => {
+    const databaseError = Object.assign(new Error('Connection refused'), {
+      code: 'ECONNREFUSED',
+    });
+
+    findByEmail.mockRejectedValue(databaseError);
+
+    await expect(
+      authService.validateCredentials('test@example.com', password),
+    ).rejects.toBe(databaseError);
   });
 });
