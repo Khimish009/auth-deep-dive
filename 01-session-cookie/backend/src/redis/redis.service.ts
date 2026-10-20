@@ -12,7 +12,11 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async set(key: string, value: string, ttl?: number): Promise<string | null> {
-    if (ttl !== undefined && ttl >= 0) {
+    if (ttl !== undefined) {
+      if (!Number.isInteger(ttl) || ttl <= 0) {
+        throw new Error('TTL must be a positive integer');
+      }
+
       return await this.redis.set(key, value, { EX: ttl });
     }
     return await this.redis.set(key, value);

@@ -23,7 +23,7 @@ import { parsePort } from '../common/config/parse-port.js';
         });
 
         client.on('error', (err) => {
-          logger.error(`Redis client error: ${err.message}`, err.stask);
+          logger.error(`Redis client error: ${err.message}`, err.stack);
         });
 
         await client.connect();
@@ -31,6 +31,7 @@ import { parsePort } from '../common/config/parse-port.js';
         return client;
       },
     },
+    RedisService,
   ],
   exports: [RedisService],
 })
