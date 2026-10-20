@@ -12,7 +12,7 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async set(key: string, value: string, ttl?: number): Promise<string | null> {
-    if (ttl) {
+    if (ttl !== undefined && ttl >= 0) {
       return await this.redis.set(key, value, { EX: ttl });
     }
     return await this.redis.set(key, value);
@@ -23,6 +23,6 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async onModuleDestroy(): Promise<void> {
-    await this.redis.quit();
+    await this.redis.close();
   }
 }
