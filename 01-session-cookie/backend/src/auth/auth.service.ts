@@ -7,10 +7,15 @@ import { UserRow, UsersService } from '../users/users.service.js';
 import { RegisterDto } from './dto/register.dto.js';
 import argon2 from 'argon2';
 import { DUMMY_PASSWORD_HASH } from './constants.js';
+import { LoginDto } from './dto/login.dto.js';
+import { SessionsService } from '../sessions/sessions.service.js';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly sessionService: SessionsService,
+  ) {}
 
   async register(dto: RegisterDto): Promise<UserRow> {
     const email = dto.email.trim().toLowerCase();
@@ -32,6 +37,13 @@ export class AuthService {
 
       throw err;
     }
+  }
+
+  async login(dto: LoginDto): Promise<string> {
+    const user = await this.validateCredentials(dto.email, dto.password);
+    const sessionId = await this.sessionService.create(user.id);
+
+    return sessionId;
   }
 
   async validateCredentials(email: string, password: string): Promise<UserRow> {

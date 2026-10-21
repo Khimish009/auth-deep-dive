@@ -1,6 +1,8 @@
 import { randomBytes } from 'crypto';
 import { RedisService } from '../redis/redis.service.js';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class SessionsService {
   constructor(private readonly redis: RedisService) {}
 
